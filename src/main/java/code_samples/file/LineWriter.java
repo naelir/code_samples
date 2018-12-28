@@ -44,4 +44,8 @@ public class LineWriter {
 	public void write(final Object o, final boolean append) {
 		this.write(Arrays.asList(o), append);
 	}
+
+	public void write(final Object[] o, final boolean append) {
+		this.write(Arrays.asList(o), append);
+	}
 }
