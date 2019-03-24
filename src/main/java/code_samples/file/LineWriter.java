@@ -1,51 +1,49 @@
 package code_samples.file;
 
 import java.io.BufferedWriter;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class LineWriter {
-	private static final Logger LOG = LoggerFactory.getLogger(LineWriter.class);
+	private final Charset encoding;
 
-	private final String encoding;
+	private final Path in;
 
-	private final String fileName;
-
-	public LineWriter(final String fileName, final String encoding) {
-		this.fileName = fileName;
+	public LineWriter(final Path in, final Charset encoding) {
+		this.in = in;
 		this.encoding = encoding;
 	}
 
-	public <T> void write(final Collection<T> collection, final boolean append) {
+	public <T> void write(final Collection<T> collection, final OpenOption... openOptions) throws IOException {
 		try (
-			FileOutputStream fos = new FileOutputStream(this.fileName, append);
+			OutputStream fos = Files.newOutputStream(this.in, openOptions);
 			OutputStreamWriter or = new OutputStreamWriter(fos, this.encoding);
-			BufferedWriter br = new BufferedWriter(or)) {
+			BufferedWriter br = new BufferedWriter(or)
+		) {
 			for (final Object o : collection) {
 				br.write(o.toString());
-				br.write("\n");
+				br.newLine();
 			}
-		} catch (final IOException e) {
-			LOG.error("error:", e);
 		}
 	}
 
-	public <K, V> void write(final Map<K, V> map, final boolean append) {
-		this.write(map.values(), append);
+	public <K, V> void write(final Map<K, V> map, final OpenOption... openOptions) throws IOException {
+		this.write(map.values(), openOptions);
 	}
 
-	public void write(final Object o, final boolean append) {
-		this.write(Arrays.asList(o), append);
+	public void write(final Object o, final OpenOption... openOptions) throws IOException {
+		this.write(Arrays.asList(o), openOptions);
 	}
 
-	public void write(final Object[] o, final boolean append) {
-		this.write(Arrays.asList(o), append);
+	public void write(final Object[] o, final OpenOption... openOptions) throws IOException {
+		this.write(Arrays.asList(o), openOptions);
 	}
 }

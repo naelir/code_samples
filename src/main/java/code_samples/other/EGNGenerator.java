@@ -33,7 +33,7 @@ import java.util.List;
  *
  */
 public class EGNGenerator {
-	private static final int HIGHEST_YEAR = 2029;
+	private static final int HIGHEST_YEAR = 2100;
 
 	private static final int LOWEST_YEAR = 1900;
 
@@ -50,8 +50,7 @@ public class EGNGenerator {
 				for (int day = 1; day <= 31; day++)
 					for (int regionCode = startRegionCode; regionCode <= endRegionCode; regionCode++) {
 						final int yearLastDigits = year % 100;
-						final String format = String.format("%02d%02d%02d%03d", yearLastDigits,
-								month, day, regionCode);
+						final String format = String.format("%02d%02d%02d%03d", yearLastDigits, month, day, regionCode);
 						final String[] split = format.split("");
 						assertThat(split).hasSize(POSITION_WEIGHTS.length);
 						int sum = 0;
@@ -66,8 +65,8 @@ public class EGNGenerator {
 						int monthValue = month;
 						if (year >= 2000)
 							monthValue = month + 40;
-						final String egn = String.format("%02d%02d%02d%03d%d", yearLastDigits,
-								monthValue, day, regionCode, controlDigit);
+						final String egn = String.format("%02d%02d%02d%03d%d", yearLastDigits, monthValue, day,
+								regionCode, controlDigit);
 						list.add(egn);
 					}
 		return list;

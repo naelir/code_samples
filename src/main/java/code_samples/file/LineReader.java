@@ -4,36 +4,29 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class LineReader {
-	private static final Logger LOG = LoggerFactory.getLogger(LineReader.class);
+	private final Charset encoding;
 
-	private final String encoding;
+	private final Path in;
 
-	private final String fileName;
-
-	public LineReader(final String fileName, final String encoding) {
-		this.fileName = fileName;
+	public LineReader(final Path in, final Charset encoding) {
+		this.in = in;
 		this.encoding = encoding;
 	}
 
-	public List<String> getLines() {
+	public List<String> getLines() throws IOException {
 		final List<String> list = new ArrayList<>();
-		final Path file = Paths.get(this.fileName);
-		try (Stream<String> stream = Files.lines(file, Charset.forName(this.encoding))) {
+		try (
+			Stream<String> stream = Files.lines(this.in, this.encoding)
+		) {
 			stream.forEach(element -> {
-				if (!element.isEmpty())
+				if (element.isEmpty() == false)
 					list.add(element);
 			});
-		} catch (final IOException e) {
-			LOG.error("error:", e);
 		}
 		return list;
 	}
